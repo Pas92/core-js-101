@@ -451,8 +451,9 @@ function findAllOccurrences(arr, item) {
  *    [1, 2, 3, 4, 5]                   => '1,2,3,4,5'
  *    ['rock', 'paper', 'scissors']     => 'rock,paper,scissors'
  */
-function toStringList(/* arr */) {
-  throw new Error('Not implemented');
+function toStringList(arr) {
+  return arr.map((e) => `${e}`).join();
+  // throw new Error('Not implemented');
 }
 
 
@@ -482,8 +483,19 @@ function toStringList(/* arr */) {
  *      { country: 'Russia',  city: 'Saint Petersburg' }
  *    ]
  */
-function sortCitiesArray(/* arr */) {
-  throw new Error('Not implemented');
+function sortCitiesArray(arr) {
+  return arr.sort((a, b) => {
+    if (a.country <= b.country) {
+      return -1;
+    }
+    return 1;
+  }).sort((a, b) => {
+    if (a.city <= b.city && a.country <= b.country) {
+      return -1;
+    }
+    return 1;
+  });
+  // throw new Error('Not implemented');
 }
 
 /**
@@ -504,8 +516,18 @@ function sortCitiesArray(/* arr */) {
  *           [0,0,0,1,0],
  *           [0,0,0,0,1]]
  */
-function getIdentityMatrix(/* n */) {
-  throw new Error('Not implemented');
+function getIdentityMatrix(n) {
+  return new Array(n)
+    .fill('arr')
+    .map((e, i) => new Array(n)
+      .fill(0)
+      .map((el, index) => {
+        if (i === index) {
+          return 1;
+        }
+        return 0;
+      }));
+  // throw new Error('Not implemented');
 }
 
 /**
@@ -521,8 +543,9 @@ function getIdentityMatrix(/* n */) {
  *     0, 100 => [ 0, 1, 2, ..., 100 ]
  *     3, 3   => [ 3 ]
  */
-function getIntervalArray(/* start, end */) {
-  throw new Error('Not implemented');
+function getIntervalArray(start, end) {
+  return new Array(end - start + 1).fill(null).map((e, i) => i + start);
+  // throw new Error('Not implemented');
 }
 
 /**
@@ -536,8 +559,9 @@ function getIntervalArray(/* start, end */) {
  *   [ 'a', 'a', 'a', 'a' ]  => [ 'a' ]
  *   [ 1, 1, 2, 2, 3, 3, 4, 4] => [ 1, 2, 3, 4]
  */
-function distinct(/* arr */) {
-  throw new Error('Not implemented');
+function distinct(arr) {
+  return Array.from(new Set(arr));
+  // throw new Error('Not implemented');
 }
 
 /**
