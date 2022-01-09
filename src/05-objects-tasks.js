@@ -20,8 +20,16 @@
  *    console.log(r.height);      // => 20
  *    console.log(r.getArea());   // => 200
  */
-function Rectangle(/* width, height */) {
-  throw new Error('Not implemented');
+function Rectangle(width, height) {
+  return {
+    width,
+    height,
+
+    getArea() {
+      return this.width * this.height;
+    },
+  };
+  // throw new Error('Not implemented');
 }
 
 
@@ -35,8 +43,9 @@ function Rectangle(/* width, height */) {
  *    [1,2,3]   =>  '[1,2,3]'
  *    { width: 10, height : 20 } => '{"height":10,"width":20}'
  */
-function getJSON(/* obj */) {
-  throw new Error('Not implemented');
+function getJSON(obj) {
+  return JSON.stringify(obj);
+  // throw new Error('Not implemented');
 }
 
 
@@ -51,8 +60,14 @@ function getJSON(/* obj */) {
  *    const r = fromJSON(Circle.prototype, '{"radius":10}');
  *
  */
-function fromJSON(/* proto, json */) {
-  throw new Error('Not implemented');
+function fromJSON(proto, json) {
+  const values = JSON.parse(json);
+
+  return {
+    ...values,
+    __proto__: proto,
+  };
+  // throw new Error('Not implemented');
 }
 
 
@@ -111,32 +126,111 @@ function fromJSON(/* proto, json */) {
  */
 
 const cssSelectorBuilder = {
-  element(/* value */) {
-    throw new Error('Not implemented');
+  resultCSS: '',
+  elementCount: 0,
+
+  element(value) {
+    const result = `${this.resultCSS}${value}`;
+    this.elementCount += 1;
+
+    return {
+      __proto__: this,
+      resultCSS: result,
+      elementCount: this.elementCount,
+    };
+
+
+    // throw new Error('Not implemented');
   },
 
-  id(/* value */) {
-    throw new Error('Not implemented');
+  id(value) {
+    const result = `${this.resultCSS}#${value}`;
+    const elCount = this.elementCount;
+
+    return {
+      __proto__: this,
+      resultCSS: result,
+      elementCount: elCount,
+    };
+    // throw new Error('Not implemented');
   },
 
-  class(/* value */) {
-    throw new Error('Not implemented');
+  class(value) {
+    const result = `${this.resultCSS}.${value}`;
+    return {
+      resultCSS: result,
+      __proto__: this,
+      elementCount: this.elementCount,
+    };
+    // throw new Error('Not implemented');
   },
 
-  attr(/* value */) {
-    throw new Error('Not implemented');
+  attr(value) {
+    const result = `${this.resultCSS}[${value}]`;
+    return {
+      resultCSS: result,
+      __proto__: this,
+      elementCount: this.elementCount,
+    };
+    // throw new Error('Not implemented');
   },
 
-  pseudoClass(/* value */) {
-    throw new Error('Not implemented');
+  pseudoClass(value) {
+    const result = `${this.resultCSS}:${value}`;
+    return {
+      resultCSS: result,
+      __proto__: this,
+      elementCount: this.elementCount,
+    };
+    // throw new Error('Not implemented');
   },
 
-  pseudoElement(/* value */) {
-    throw new Error('Not implemented');
+  pseudoElement(value) {
+    const result = `${this.resultCSS}::${value}`;
+
+    return {
+      resultCSS: result,
+      __proto__: this,
+      elementCount: this.elementCount,
+    };
+    // throw new Error('Not implemented');
   },
 
-  combine(/* selector1, combinator, selector2 */) {
-    throw new Error('Not implemented');
+  combine(selector1, combinator, selector2) {
+    const css1 = selector1.stringify();
+    const css2 = selector2.stringify();
+
+    const result = `${css1} ${combinator} ${css2}`;
+    return {
+      resultCSS: result,
+      __proto__: this,
+      elementCount: this.elementCount,
+    };
+    // throw new Error('Not implemented');
+  },
+
+  stringify() {
+    if (this.elementCount > 1) {
+      throw new Error('e/Element, id and pseudo-element should not occur more then one time inside the selector/');
+    }
+
+    const validateID = this.resultCSS.split('#');
+    if (validateID.length > 2) {
+      throw new Error('#/Element, id and pseudo-element should not occur more then one time inside the selector/');
+    }
+
+    const validatePseudoBefore = this.resultCSS.split('::before');
+    if (validatePseudoBefore.length > 2) {
+      throw new Error('b/Element, id and pseudo-element should not occur more then one time inside the selector/');
+    }
+
+    const validatePseudoAfter = this.resultCSS.split('::after');
+    if (validatePseudoAfter.length > 2) {
+      throw new Error('a/Element, id and pseudo-element should not occur more then one time inside the selector/');
+    }
+
+    const selector = this.resultCSS;
+    return selector;
   },
 };
 
