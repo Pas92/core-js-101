@@ -169,8 +169,12 @@ function doRectanglesOverlap(rect1, rect2) {
  *   { center: { x:0, y:0 }, radius:10 },  { x:10, y:10 }   => false
  *
  */
-function isInsideCircle(/* circle, point */) {
-  throw new Error('Not implemented');
+function isInsideCircle(circle, point) {
+  const vector = Math.sqrt((point.x - circle.center.x) ** 2 + (point.y - circle.center.y) ** 2);
+
+  if (vector < circle.radius) return true;
+  return false;
+  // throw new Error('Not implemented');
 }
 
 
@@ -185,8 +189,13 @@ function isInsideCircle(/* circle, point */) {
  *   'abracadabra'  => 'c'
  *   'entente' => null
  */
-function findFirstSingleChar(/* str */) {
-  throw new Error('Not implemented');
+function findFirstSingleChar(str) {
+  for (let i = 0; i < str.length; i += 1) {
+    if (str.indexOf(str[i]) === str.lastIndexOf(str[i])) return str[i];
+  }
+
+  return null;
+  // throw new Error('Not implemented');
 }
 
 
@@ -212,8 +221,24 @@ function findFirstSingleChar(/* str */) {
  *   5, 3, true, true   => '[3, 5]'
  *
  */
-function getIntervalString(/* a, b, isStartIncluded, isEndIncluded */) {
-  throw new Error('Not implemented');
+function getIntervalString(a, b, isStartIncluded, isEndIncluded) {
+  let leftBracket = '';
+  let rightBracket = '';
+
+  if (isStartIncluded) {
+    leftBracket = '[';
+  } else {
+    leftBracket = '(';
+  }
+
+  if (isEndIncluded) {
+    rightBracket = ']';
+  } else {
+    rightBracket = ')';
+  }
+
+  return `${leftBracket}${Math.min(a, b)}, ${Math.max(a, b)}${rightBracket}`;
+  // throw new Error('Not implemented');
 }
 
 
@@ -229,8 +254,9 @@ function getIntervalString(/* a, b, isStartIncluded, isEndIncluded */) {
  * 'rotator' => 'rotator'
  * 'noon' => 'noon'
  */
-function reverseString(/* str */) {
-  throw new Error('Not implemented');
+function reverseString(str) {
+  return str.split('').reverse().join('');
+  // throw new Error('Not implemented');
 }
 
 
@@ -246,8 +272,9 @@ function reverseString(/* str */) {
  *   87354 => 45378
  *   34143 => 34143
  */
-function reverseInteger(/* num */) {
-  throw new Error('Not implemented');
+function reverseInteger(num) {
+  return +num.toString().split('').reverse().join('');
+  // throw new Error('Not implemented');
 }
 
 
@@ -289,8 +316,16 @@ function isCreditCardNumber(/* ccn */) {
  *   10000 ( 1+0+0+0+0 = 1 ) => 1
  *   165536 (1+6+5+5+3+6 = 26,  2+6 = 8) => 8
  */
-function getDigitalRoot(/* num */) {
-  throw new Error('Not implemented');
+function getDigitalRoot(num) {
+  return num.toString()
+    .split('')
+    .map((e) => +e)
+    .reduce((prev, acc) => prev + acc, 0)
+    .toString()
+    .split('')
+    .map((e) => +e)
+    .reduce((prev, acc) => prev + acc, 0);
+  // throw new Error('Not implemented');
 }
 
 
@@ -315,8 +350,28 @@ function getDigitalRoot(/* num */) {
  *   '{)' = false
  *   '{[(<{[]}>)]}' = true
  */
-function isBracketsBalanced(/* str */) {
-  throw new Error('Not implemented');
+function isBracketsBalanced(str) {
+  const brackets = {
+    '[': ']',
+    '(': ')',
+    '{': '}',
+    '<': '>',
+  };
+
+  const arr = str.split('');
+  for (let i = 0; i < arr.length - 1; i += 1) {
+    if (arr[i + 1] === brackets[arr[i]]) {
+      arr.splice(i, 2);
+      i = -1;
+    }
+  }
+
+  if (arr.length === 0) {
+    return true;
+  }
+  return false;
+
+  // throw new Error('Not implemented');
 }
 
 
@@ -340,8 +395,9 @@ function isBracketsBalanced(/* str */) {
  *    365, 4  => '11231'
  *    365, 10 => '365'
  */
-function toNaryString(/* num, n */) {
-  throw new Error('Not implemented');
+function toNaryString(num, n) {
+  return num.toString(n);
+  // throw new Error('Not implemented');
 }
 
 
@@ -357,8 +413,25 @@ function toNaryString(/* num, n */) {
  *   ['/web/assets/style.css', '/.bin/mocha',  '/read.me'] => '/'
  *   ['/web/favicon.ico', '/web-scripts/dump', '/verbalizer/logs'] => '/'
  */
-function getCommonDirectoryPath(/* pathes */) {
-  throw new Error('Not implemented');
+function getCommonDirectoryPath(pathes) {
+  let common = '';
+  pathes.sort();
+
+  const minStr = pathes[0];
+  const maxStr = pathes[pathes.length - 1];
+
+  for (let i = 0; i < minStr.length; i += 1) {
+    if (minStr[i] === maxStr[i]) {
+      common = `${common}${minStr[i]}`;
+    } else {
+      break;
+    }
+  }
+
+  if (common.split('/')[0] === '' && common.split('/').length === 1) return '';
+
+  return common.split('/').slice(0, -1).join('/').concat('/');
+  // throw new Error('Not implemented');
 }
 
 
