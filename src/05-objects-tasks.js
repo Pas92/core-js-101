@@ -241,8 +241,6 @@ const cssSelectorBuilder = {
     this.resultCSS = `${this.resultCSS}::${value}`;
     this.pseudoElementCSS.push(value);
 
-    console.log(JSON.parse(JSON.stringify(this)));
-
     if (this.pseudoElementCSS.length > 1) {
       throw new Error('Element, id and pseudo-element should not occur more then one time inside the selector');
     }
