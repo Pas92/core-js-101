@@ -127,71 +127,134 @@ function fromJSON(proto, json) {
 
 const cssSelectorBuilder = {
   resultCSS: '',
-  elementCount: 0,
+  elementCSS: [],
+  idCSS: [],
+  pseudoElementCSS: [],
 
   element(value) {
-    const result = `${this.resultCSS}${value}`;
-    this.elementCount += 1;
+    this.resultCSS = `${this.resultCSS}${value}`;
+    this.elementCSS.push(value);
+
+    if (this.elementCSS.length > 1) {
+      throw new Error('Element, id and pseudo-element should not occur more then one time inside the selector');
+    }
+
+    if (this.resultCSS.includes('#')) {
+      throw new Error('Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
+    }
+
+    const values = JSON.parse(JSON.stringify(this));
+
+    this.resultCSS = '';
+    this.elementCSS.length = 0;
 
     return {
       __proto__: this,
-      resultCSS: result,
-      elementCount: this.elementCount,
+      ...values,
     };
-
-
     // throw new Error('Not implemented');
   },
 
   id(value) {
-    const result = `${this.resultCSS}#${value}`;
-    const elCount = this.elementCount;
+    this.resultCSS = `${this.resultCSS}#${value}`;
+    this.idCSS.push(value);
+
+    if (this.idCSS.length > 1) {
+      throw new Error('Element, id and pseudo-element should not occur more then one time inside the selector');
+    }
+
+    if (this.resultCSS.includes('.')) {
+      throw new Error('Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
+    }
+
+    if (this.resultCSS.includes('::')) {
+      throw new Error('Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
+    }
+
+    const values = JSON.parse(JSON.stringify(this));
+
+    this.resultCSS = '';
+    this.idCSS.length = 0;
 
     return {
+      ...values,
       __proto__: this,
-      resultCSS: result,
-      elementCount: elCount,
     };
     // throw new Error('Not implemented');
   },
 
   class(value) {
-    const result = `${this.resultCSS}.${value}`;
+    this.resultCSS = `${this.resultCSS}.${value}`;
+
+    const values = JSON.parse(JSON.stringify(this));
+
+    if (this.resultCSS.includes('[') && this.resultCSS.includes(']')) {
+      throw new Error('Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
+    }
+
+    this.resultCSS = '';
+
     return {
-      resultCSS: result,
+      ...values,
       __proto__: this,
-      elementCount: this.elementCount,
     };
     // throw new Error('Not implemented');
   },
 
   attr(value) {
-    const result = `${this.resultCSS}[${value}]`;
+    this.resultCSS = `${this.resultCSS}[${value}]`;
+
+    if (this.resultCSS.includes(':')) {
+      throw new Error('Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
+    }
+
+    const values = JSON.parse(JSON.stringify(this));
+
+    this.resultCSS = '';
+
     return {
-      resultCSS: result,
+      ...values,
       __proto__: this,
-      elementCount: this.elementCount,
     };
     // throw new Error('Not implemented');
   },
 
   pseudoClass(value) {
-    const result = `${this.resultCSS}:${value}`;
+    this.resultCSS = `${this.resultCSS}:${value}`;
+
+    if (this.resultCSS.includes('::')) {
+      throw new Error('Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
+    }
+
+    const values = JSON.parse(JSON.stringify(this));
+
+    this.resultCSS = '';
+
     return {
-      resultCSS: result,
+      ...values,
       __proto__: this,
-      elementCount: this.elementCount,
     };
     // throw new Error('Not implemented');
   },
 
   pseudoElement(value) {
-    const result = `${this.resultCSS}::${value}`;
+    this.resultCSS = `${this.resultCSS}::${value}`;
+    this.pseudoElementCSS.push(value);
+
+    console.log(JSON.parse(JSON.stringify(this)));
+
+    if (this.pseudoElementCSS.length > 1) {
+      throw new Error('Element, id and pseudo-element should not occur more then one time inside the selector');
+    }
+
+    const values = JSON.parse(JSON.stringify(this));
+
+    this.resultCSS = '';
+    this.pseudoElementCSS.length = 0;
 
     return {
-      resultCSS: result,
+      ...values,
       __proto__: this,
-      elementCount: this.elementCount,
     };
     // throw new Error('Not implemented');
   },
@@ -200,35 +263,20 @@ const cssSelectorBuilder = {
     const css1 = selector1.stringify();
     const css2 = selector2.stringify();
 
-    const result = `${css1} ${combinator} ${css2}`;
+    this.resultCSS = `${css1} ${combinator} ${css2}`;
+
+    const values = JSON.parse(JSON.stringify(this));
+
+    this.resultCSS = '';
+
     return {
-      resultCSS: result,
+      ...values,
       __proto__: this,
-      elementCount: this.elementCount,
     };
     // throw new Error('Not implemented');
   },
 
   stringify() {
-    if (this.elementCount > 1) {
-      throw new Error('e/Element, id and pseudo-element should not occur more then one time inside the selector/');
-    }
-
-    const validateID = this.resultCSS.split('#');
-    if (validateID.length > 2) {
-      throw new Error('#/Element, id and pseudo-element should not occur more then one time inside the selector/');
-    }
-
-    const validatePseudoBefore = this.resultCSS.split('::before');
-    if (validatePseudoBefore.length > 2) {
-      throw new Error('b/Element, id and pseudo-element should not occur more then one time inside the selector/');
-    }
-
-    const validatePseudoAfter = this.resultCSS.split('::after');
-    if (validatePseudoAfter.length > 2) {
-      throw new Error('a/Element, id and pseudo-element should not occur more then one time inside the selector/');
-    }
-
     const selector = this.resultCSS;
     return selector;
   },
