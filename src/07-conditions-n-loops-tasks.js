@@ -298,8 +298,21 @@ function reverseInteger(num) {
  *   5436468789016589 => false
  *   4916123456789012 => false
  */
-function isCreditCardNumber(/* ccn */) {
-  throw new Error('Not implemented');
+function isCreditCardNumber(ccn) {
+  const temp = [...ccn.toString()].reverse();
+  const ret = [];
+  temp.forEach((e, i) => {
+    const multiple = i % 2 === 0 ? 1 : 2;
+    const tempResult = +e * multiple;
+    const result = tempResult < 10
+      ? tempResult
+      : +`${tempResult}`[0] + +`${tempResult}`[1];
+    ret.push(result);
+  });
+
+  return !(ret.reduce((prev, acc) => prev + acc, 0) % 10);
+
+  // throw new Error('Not implemented');
 }
 
 /**
@@ -488,8 +501,43 @@ function getMatrixProduct(/* m1, m2 */) {
  *    [    ,   ,    ]]
  *
  */
-function evaluateTicTacToePosition(/* position */) {
-  throw new Error('Not implemented');
+function evaluateTicTacToePosition(position) {
+  for (let i = 0; i < 3; i += 1) {
+    if (position[i].every((e) => e === 'X') && position[i].length === 3) {
+      return 'X';
+    }
+
+    if (position[i].every((e) => e === '0') && position[i].length === 3) {
+      return '0';
+    }
+
+    if (position[0][i] === 'X' && position[1][i] === 'X' && position[2][i] === 'X') {
+      return 'X';
+    }
+
+    if (position[0][i] === '0' && position[1][i] === '0' && position[2][i] === '0') {
+      return '0';
+    }
+  }
+
+  if (position[0][0] === '0' && position[1][1] === '0' && position[2][2] === '0') {
+    return '0';
+  }
+
+  if (position[0][0] === 'X' && position[1][1] === 'X' && position[2][2] === 'X') {
+    return 'X';
+  }
+
+  if (position[0][2] === '0' && position[1][1] === '0' && position[2][0] === '0') {
+    return '0';
+  }
+
+  if (position[0][2] === 'X' && position[1][1] === 'X' && position[2][0] === 'X') {
+    return 'X';
+  }
+
+  return undefined;
+  // throw new Error('Not implemented');
 }
 
 
